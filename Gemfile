@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.2.2'
+ruby '2.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.1'
@@ -55,3 +55,9 @@ group :production do
 end
 
 
+#[bat@iZ250hm45e3Z rottenpotatoes-rails-intro]$ rake db:migrate
+#rake aborted!
+#ExecJS::RuntimeUnavailable: Could not find a JavaScript runtime. See https://github.com/rails/execjs for a list of available runtimes.
+#
+gem 'therubyracer'
+gem 'execjs'
