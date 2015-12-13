@@ -11,14 +11,54 @@ class MoviesController < ApplicationController
   end
 
   def index
-    if params[:sort] == "Title"
-      @movies = Movie.order("title")
-	elsif params[:sort] == "ReleaseDate"
-	  @movies = Movie.order("release_date")
+
+	  @all_ratings = Movie.all_ratings
+    @sort = nil
+    @filter = nil
+
+
+    ################  Extract info from params  #############################
+    #### with params sort
+    if params[:sort]
+      @sort = session[:sort] = params[:sort]
+    ####   with params filter rating  
+    elsif params[:ratings]
+      @filter = []
+      params[:ratings].each do |key, value|
+        @filter << key
+      end
+      session[:filter] = @filter
+    end
+
+    ################  Extract info from session  #############################
+    if @filter == nil && session[:filter] != nil
+      @filter = session[:filter]
+    end 
+    if @sort == nil && session[:sort] != nil
+      @sort = session[:sort]
+    end
+
+    ###########  Highlight the head of sorted column  ########################
+    if @sort == 'title'
+      @title_class = 'hilite'
+    elsif @sort == 'release_date'
+      @release_class = 'hilite'
+    end
+
+    ###########  set @movies according to @sort and @filter  ###################
+    if @sort != nil && @filter != nil
+      @movies = Movie.rating_filtered(@filter).order(@sort)
+    elsif @filter != nil
+      @movies = Movie.rating_filtered(@filter)
+    elsif @sort != nil
+      @movies = Movie.order(@sort)
     else
       @movies = Movie.all
-    end
+    end          
+
   end
+
+  
   def new
     # default: render 'new' template
   end
